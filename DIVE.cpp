@@ -33,6 +33,8 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <algorithm>
+#include <utility> 
 
 /* Data types for Delaunay Triangulation. */
 typedef CGAL::Exact_predicates_exact_constructions_kernel K;
@@ -47,6 +49,7 @@ typedef DT3::Finite_cells_iterator              cell_iterator;
 typedef P3DT3::Iso_cuboid       Iso_cuboid;
 typedef CGAL::Tetrahedron_3<K>  Tetrahedron;
 typedef CGAL::Point_3<K>        Point_3;
+typedef CGAL::Vector_3<K>   Vector_3;
 
 /* Basic numerical type. */
 typedef K::FT FT;
@@ -179,8 +182,24 @@ int main(int argc, char *argv[]) {
        if (z < Bmin) z += Bsize;
        else if (z >= Bmax) z -= Bsize;
 
+       /* Compute parity */
+       Point_3 r_a = tet[0], r_b = tet[1], r_c = tet[2], r_d = tet[3];
+
+       K::FT l_ab = CGAL::squared_distance(r_a, r_b), l_ac = CGAL::squared_distance(r_a, r_c), l_ad = CGAL::squared_distance(r_a, r_d),
+       l_bc = CGAL::squared_distance(r_b, r_c), l_bd = CGAL::squared_distance(r_b, r_d), l_cd = CGAL::squared_distance(r_c, r_d);
+       K::FT s_a = l_ab + l_ac + l_ad, s_b = l_ab + l_bc + l_bd, s_c = l_ac + l_bc + l_cd, s_d = l_ad + l_bd + l_cd;
+
+       std::vector<std::pair<K::FT, Point_3>> v = {{s_a, r_a}, {s_b, r_b}, {s_c, r_c}, {s_d, r_d}};
+      
+       std::sort(v.begin(), v.end(), [](const std::pair<K::FT,Point_3>& x,
+        const std::pair<K::FT,Point_3>& y) {return x.first < y.first;});
+       Point_3 r_0 = v[0].second, r_1 = v[1].second, r_2 = v[2].second, r_3 = v[3].second;
+      
+       Vector_3 s_1 = r_1 - r_0, s_2 = r_2 - r_0, s_3 = r_3 - r_0;
+       K::FT p = CGAL::determinant(s_1, s_2, s_3);
+      
        ostr << x << " " << y << " " << z << " "
-           << CGAL::sqrt(CGAL::to_double(radius)) << std::endl;
+           << CGAL::sqrt(CGAL::to_double(radius)) << " " << p << std::endl;
      }
      ostr.close();
   }
@@ -206,6 +225,7 @@ int main(int argc, char *argv[]) {
          cell != DT.finite_cells_end(); cell++) {
       Point_3 Pcen = cell->circumcenter();
       FT radius = CGAL::squared_distance(Pcen, cell->vertex(0)->point());
+
 
       ostr << Pcen << " " << CGAL::sqrt(CGAL::to_double(radius)) << std::endl;
     }

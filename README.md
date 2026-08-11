@@ -5,10 +5,12 @@
 
 ## Table of Contents
 
--   [Introduction](#introduction)
--   [Compilation](#compilation)
--   [Running](#running)
--   [References](#references)
+- [DIVE](#dive)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Compilation](#compilation)
+  - [Running](#running)
+  - [References](#references)
 
 ## Introduction
 
@@ -57,7 +59,7 @@ The `DIVE` executable should be run with command line options that specify the i
 | `-l`   | &cross;   | Set the lower boundary of the periodic box (default: 0) |
 | `-u`   | &cross;   | Set the upper boundary of the periodic box              |
 
-Here, the first 3 columns of the input catalogues must be the 3D coordinates of tracers, which are typically in comoving space. The resulting void catalogue contains 4 columns: {*x*<sub>c</sub> , *y*<sub>c</sub> , *z*<sub>c</sub> , *R*<sub>v</sub>}, i.e., coordinates of the void centres, as well as the radii.
+Here, the first 3 columns of the input catalogues must be the 3D coordinates of tracers, which are typically in comoving space. The resulting catalogue contains 5 columns: {*x*<sub>c</sub>, *y*<sub>c</sub>, *z*<sub>c</sub>, *R*<sub>v</sub>, *p*}, i.e. the coordinates of the void centres, the radii, and the parity of the corresponding Delaunay tetrahedron. The parity is defined as the signed volume *p* $= \det(\vec{s_1}, \vec{s_2}, \vec{s_3})$ with $\vec{s_i} = \vec{r_i} - \vec{r_0}$, where the four vertices $\vec{r_i}$ are ordered by increasing sum of the squared lengths of their three incident edges (so $\vec{r_0}$ is the vertex with the smallest such sum). 
 
 If the upper boundary (*B*<sub>max</sub>) of the periodic box is supplied, the Delaunay Triangulation will be constructed with periodic boundary conditions. In particular, the lower boundary of the box (*B*<sub>min</sub>) is set to 0, if it is not provided specifically. Coordinates of tracers in the periodic box, should be no smaller than the *B*<sub>min</sub>, but less than *B*<sub>max</sub>.
 
