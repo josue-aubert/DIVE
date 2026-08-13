@@ -70,7 +70,7 @@ void help(void) {
       << "  -u    Upper boundary of the periodic box" << std::endl
       << "        Periodic boundary condition is only enabled if '-u' is set"
       << std::endl
-      << "Github repository: https://github.com/cheng-zhao/DIVE" << std::endl
+      << "Github repository: https://github.com/josue-aubert/DIVE" << std::endl
       << "License: GPLv3" << std::endl;
 }
 
