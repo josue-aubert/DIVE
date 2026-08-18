@@ -185,9 +185,11 @@ int main(int argc, char *argv[]) {
        /* Compute parity */
        Point_3 r_a = tet[0], r_b = tet[1], r_c = tet[2], r_d = tet[3];
 
-       K::FT l_ab = CGAL::squared_distance(r_a, r_b), l_ac = CGAL::squared_distance(r_a, r_c), l_ad = CGAL::squared_distance(r_a, r_d),
-       l_bc = CGAL::squared_distance(r_b, r_c), l_bd = CGAL::squared_distance(r_b, r_d), l_cd = CGAL::squared_distance(r_c, r_d);
-       K::FT s_a = l_ab + l_ac + l_ad, s_b = l_ab + l_bc + l_bd, s_c = l_ac + l_bc + l_cd, s_d = l_ad + l_bd + l_cd;
+       K::FT l_ab = CGAL::squared_distance(r_a, r_b), l_ac = CGAL::squared_distance(r_a, r_c), 
+             l_ad = CGAL::squared_distance(r_a, r_d), l_bc = CGAL::squared_distance(r_b, r_c), 
+             l_bd = CGAL::squared_distance(r_b, r_d), l_cd = CGAL::squared_distance(r_c, r_d);
+       K::FT s_a = l_ab + l_ac + l_ad, s_b = l_ab + l_bc + l_bd, 
+             s_c = l_ac + l_bc + l_cd, s_d = l_ad + l_bd + l_cd;
 
        std::vector<std::pair<K::FT, Point_3>> v = {{s_a, r_a}, {s_b, r_b}, {s_c, r_c}, {s_d, r_d}};
       
@@ -196,10 +198,13 @@ int main(int argc, char *argv[]) {
        Point_3 r_0 = v[0].second, r_1 = v[1].second, r_2 = v[2].second, r_3 = v[3].second;
       
        Vector_3 s_1 = r_1 - r_0, s_2 = r_2 - r_0, s_3 = r_3 - r_0;
-       K::FT p = CGAL::determinant(s_1, s_2, s_3);
+       double chirality = CGAL::to_double(CGAL::determinant(s_1, s_2, s_3));
+       double chirality_shape = chirality / (CGAL::sqrt(CGAL::to_double(s_1.squared_length()))
+                          * CGAL::sqrt(CGAL::to_double(s_2.squared_length()))
+                          * CGAL::sqrt(CGAL::to_double(s_3.squared_length())));  // In [-1, 1]
       
-       ostr << x << " " << y << " " << z << " "
-           << CGAL::sqrt(CGAL::to_double(radius)) << " " << p << std::endl;
+       ostr << x << " " << y << " " << z << " " 
+       << CGAL::sqrt(CGAL::to_double(radius)) << " " << chirality << " " << chirality_shape << std::endl;
      }
      ostr.close();
   }
