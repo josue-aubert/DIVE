@@ -199,12 +199,15 @@ int main(int argc, char *argv[]) {
       
        Vector_3 s_1 = r_1 - r_0, s_2 = r_2 - r_0, s_3 = r_3 - r_0;
        double chirality = CGAL::to_double(CGAL::determinant(s_1, s_2, s_3));
-       double chirality_shape = chirality / (CGAL::sqrt(CGAL::to_double(s_1.squared_length()))
-                          * CGAL::sqrt(CGAL::to_double(s_2.squared_length()))
-                          * CGAL::sqrt(CGAL::to_double(s_3.squared_length())));  // In [-1, 1]
+       double l_1 = CGAL::to_double(CGAL::sqrt(CGAL::to_double(s_1.squared_length())));
+       double l_2 = CGAL::to_double(CGAL::sqrt(CGAL::to_double(s_2.squared_length())));
+       double l_3 = CGAL::to_double(CGAL::sqrt(CGAL::to_double(s_3.squared_length())));
+      std::vector<double> lengths = {l_1, l_2, l_3};
+      std::sort(lengths.begin(), lengths.end());
+
+       double chirality_shape = chirality / (l_1 * l_2 * l_3);  // In [-1, 1]
       
-       ostr << x << " " << y << " " << z << " " 
-       << CGAL::sqrt(CGAL::to_double(radius)) << " " << chirality << " " << chirality_shape << std::endl;
+       ostr << chirality << " " << lengths[0] << " " << lengths[1] << " " << lengths[2] << std::endl;
      }
      ostr.close();
   }
